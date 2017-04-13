@@ -410,9 +410,24 @@ namespace TSP
             return results;
         }
 
+        private static int sortCities(City a, City b)
+        {
+            if (a == null && b == null) { return 0; }
+            else if (a == null || a.X < b.X) { return -1; }
+            else if (b == null || a.X > b.X) { return 1; }
+            return 0;
+        }
+
         public string[] fancySolveProblem()
         {
             string[] results = new string[3];
+
+            Array.Sort<City>(Cities, sortCities);
+
+            for (int i = 0; i < Cities.Length; i++ )
+            {
+                Console.WriteLine(Cities[i].X);
+            }
 
             // TODO: Add your implementation for your advanced solver here.
 

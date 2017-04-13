@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Diagnostics;
+using System.Linq;
 
 
 namespace TSP
@@ -418,26 +419,59 @@ namespace TSP
             return 0;
         }
 
+        /**
+         * Recursive Divide and Conquer Solution Strategy
+         * O(???)
+         * 
+         * TODO: We need a data structure with the right stuff in it to pass back up...
+         */ 
+        private void DivideAndConquer(City[] cities)
+        {
+            if (cities.Length > 5) // Max Size of base case
+            {
+                // do the first half
+                this.DivideAndConquer(cities.Take(cities.Length / 2).ToArray());
+
+                // do the second half
+                this.DivideAndConquer(cities.Skip(cities.Length / 2).ToArray());
+
+                // TODO: Merge the minor solutions together
+            }
+            else // Base case
+            {
+                // TODO: Create a minor solution for the small piece
+            }
+        }
+
         public string[] fancySolveProblem()
         {
             string[] results = new string[3];
 
             // TODO: Add your implementation for your advanced solver here.
 
+            // Sort the array by X values
             Array.Sort<City>(Cities, sortCities);
 
+            // Sanity Check
             for (int i = 0; i < Cities.Length; i++ )
             {
                 Console.WriteLine(Cities[i].X);
             }
 
+            // Algorithm Proper
+
+
             // TODO: Recurse down to sets of size 3-5
             /*
              * Option A: Break horizontally into x regions of appropriate size
              * Option B: Break current point set into two sets with "every other" point to create roughly overlapping sets. Repeat.
-             */ 
+             */
 
             // TODO: Merge together those sets into a solution
+
+            this.DivideAndConquer(this.Cities);
+
+            // TODO: Plug in the results
 
             results[COST] = "not implemented";    // load results into array here, replacing these dummy values
             results[TIME] = "-1";

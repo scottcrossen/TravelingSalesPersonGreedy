@@ -422,6 +422,8 @@ namespace TSP
         {
             string[] results = new string[3];
 
+            // TODO: Add your implementation for your advanced solver here.
+
             Array.Sort<City>(Cities, sortCities);
 
             for (int i = 0; i < Cities.Length; i++ )
@@ -429,7 +431,13 @@ namespace TSP
                 Console.WriteLine(Cities[i].X);
             }
 
-            // TODO: Add your implementation for your advanced solver here.
+            // TODO: Recurse down to sets of size 3-5
+            /*
+             * Option A: Break horizontally into x regions of appropriate size
+             * Option B: Break current point set into two sets with "every other" point to create roughly overlapping sets. Repeat.
+             */ 
+
+            // TODO: Merge together those sets into a solution
 
             results[COST] = "not implemented";    // load results into array here, replacing these dummy values
             results[TIME] = "-1";

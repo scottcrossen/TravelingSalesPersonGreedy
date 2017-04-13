@@ -402,15 +402,67 @@ namespace TSP
         {
             string[] results = new string[3];
 
-            // TODO: Add your implementation for a greedy solver here.
+            int solutionCounter = 0;
 
-            results[COST] = "not implemented";    // load results into array here, replacing these dummy values
-            results[TIME] = "-1";
-            results[COUNT] = "-1";
+            Stopwatch timer = new Stopwatch();
+
+            timer.Start();
+
+            // TODO: Add your implementation for a greedy solver here.
+            Random rnd = new Random();
+            List<City> remaining;
+            for (int i = 0; i < this.GetCities().Length; i++) // Until we get a valid path or bust
+            {
+                Route = new ArrayList();
+                remaining = new List<City>(this.GetCities());
+
+                City s = remaining[i++]; // grab a start city
+                remaining.Remove(s);
+                Route.Add(s);
+                while (remaining.Count != 0) // while there are cities not visited
+                {
+                    double lowestCost = double.PositiveInfinity;
+                    City n = null;
+                    foreach (City c in remaining)
+                    {
+                        double cost = (Route[Route.Count - 1] as City).costToGetTo(c);
+                        if (cost < lowestCost)
+                        {
+                            lowestCost = cost;
+                            n = c;
+                        }
+                    }
+
+                    if (n == null) { break; } // If no route could be found, break out and try another node
+
+                    remaining.Remove(n);
+                    Route.Add(n);
+
+                }
+
+                if (remaining.Count != 0) { continue; } // If this route could not be completed
+
+                solutionCounter++;
+
+                TSPSolution sol = new TSPSolution(Route);
+                if (this.bssf == null || sol.costOfRoute() < this.bssf.costOfRoute())
+                {
+                    this.bssf = new TSPSolution(Route); // If a complete, better route was generated, plug it in.
+                }
+            }
+            timer.Stop();
+
+            results[COST] = costOfBssf().ToString();                          // load results array
+            results[TIME] = timer.Elapsed.ToString();
+            results[COUNT] = solutionCounter.ToString();
 
             return results;
         }
 
+        /**
+         * City sorting comparator
+         * O(1)
+         */ 
         private static int sortCities(City a, City b)
         {
             if (a == null && b == null) { return 0; }
@@ -443,13 +495,20 @@ namespace TSP
             }
         }
 
+        /**
+         * Greedy Divide and Conquer Algorithm
+         * O(???)
+         * 
+         * Notes:
+         * 
+         */ 
         public string[] fancySolveProblem()
         {
             string[] results = new string[3];
 
             // TODO: Add your implementation for your advanced solver here.
 
-            // Sort the array by X values
+            // Sort the array by X values. I'm assuming that it's O(n log(n) ) - Calvin
             Array.Sort<City>(Cities, sortCities);
 
             // Sanity Check

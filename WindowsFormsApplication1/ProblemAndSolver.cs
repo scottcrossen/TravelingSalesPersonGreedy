@@ -472,27 +472,14 @@ namespace TSP
         }
 
         /**
-         * Recursive Divide and Conquer Solution Strategy
+         * Improved Greedy Solution Strategy
          * O(???)
          * 
          * TODO: We need a data structure with the right stuff in it to pass back up...
          */ 
-        private void DivideAndConquer(City[] cities)
+        private void ImprovedGreedy(City[] cities)
         {
-            if (cities.Length > 5) // Max Size of base case
-            {
-                // do the first half
-                this.DivideAndConquer(cities.Take(cities.Length / 2).ToArray());
 
-                // do the second half
-                this.DivideAndConquer(cities.Skip(cities.Length / 2).ToArray());
-
-                // TODO: Merge the minor solutions together
-            }
-            else // Base case
-            {
-                // TODO: Create a minor solution for the small piece
-            }
         }
 
         /**
@@ -528,7 +515,7 @@ namespace TSP
 
             // TODO: Merge together those sets into a solution
 
-            this.DivideAndConquer(this.Cities);
+            this.ImprovedGreedy(this.Cities);
 
             // TODO: Plug in the results
 

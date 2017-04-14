@@ -472,7 +472,7 @@ namespace TSP
         }
         /**
          * Main structure used for creating the path
-         * For complexity I'll assume the "List" class is based on a linked-list.
+         * For complexity I'll assume the "List" class is based on a linked-list. It's probably not.
          * remove: O(c)
          * add: O(c)
          * distance: O(n)
@@ -487,7 +487,7 @@ namespace TSP
             }
             public PathBuilder(int size)
             {
-                route.Capacity = size;
+                //route.Capacity = size;
             }
             // Exports to correct format for bssf constructor
             public ArrayList export()
@@ -559,9 +559,17 @@ namespace TSP
         }
         /**
          * Improved Greedy Solution Strategy
-         * O(???)
+         * Total: O(n^2 log n)
          * 
-         * TODO: We need a data structure with the right stuff in it to pass back up...
+         * Steps
+         * 1) Clone input: O(n)
+         * 2) Find initial triangle: O(n)
+         * 3) Add on all other nodes: O(n)*O(j)*O(k) = O(n)*O(j)*(n-j)~O(n)*O(n log n) = O(n^2 log n)
+         * 3.1) While there is free node: O(n)
+         * 3.1.1) Cycle through all free points: O(j) where n is number free.
+         * 3.1.1.1) Find distance from free point to hull: O(k) where n is number in hull.
+         * 4) Return result: O(c)
+         * 
          */
         private ArrayList ImprovedGreedy(List<City> input, int first_index)
         {
@@ -616,7 +624,6 @@ namespace TSP
                 cities.RemoveAt(first_best.Item1);
             }
             // Add all cities to builder one at a time
-            bool found_error = false;
             while (cities.Count > 0)
             {
                 // Iterate through all unused cities and find the closest one.

@@ -470,18 +470,186 @@ namespace TSP
             else if (b == null || a.X > b.X) { return 1; }
             return 0;
         }
-
+        /**
+         * Main structure used for creating the path
+         * For complexity I'll assume the "List" class is based on a linked-list.
+         * remove: O(c)
+         * add: O(c)
+         * distance: O(n)
+         */
+        private class PathBuilder
+        {
+            // Fields
+            private List<City> route= new List<City>();
+            // Constructors
+            public PathBuilder()
+            {
+            }
+            public PathBuilder(int size)
+            {
+                route.Capacity = size;
+            }
+            // Exports to correct format for bssf constructor
+            public ArrayList export()
+            {
+                ArrayList output = new ArrayList();
+                for (int i = 0; i < route.Count; i++) output.Add(route[i]);
+                return output;
+            }
+            // Add object to list
+            public void add(City to_add){
+                route.Add(to_add);
+            }
+            public void add(City to_add, int index_after) {
+                route.Insert(index_after + 1, to_add);
+            }
+            // Gives the minimum distance away a city is from the hull.
+            // return Tuple<best cost, insert position>
+            public Tuple<double, int> distance(City city) {
+                // Iterate through each node and find best distance.
+                double best_cost = double.PositiveInfinity;
+                int best_position=-1;
+                for (int iter = 0; iter < route.Count; iter++)
+                {
+                    double test_cost=this[iter].costToGetTo(city)+city.costToGetTo(this[iter+1])-this[iter].costToGetTo(this[iter+1]);
+                    if (test_cost < best_cost)
+                    {
+                        best_position = iter; // Set best distance
+                        best_cost = test_cost;
+                    }
+                }
+                // Return distance
+                return new Tuple<double, int>(best_cost, best_position);
+            }
+            // Create index-style getter/setter
+            public City this[int index]{
+                get
+                {
+                    while (index >= route.Count)
+                    { // Enforce periodic boundary conditions
+                        index -= route.Count;
+                    }
+                    return route[index];
+                }
+                set
+                {
+                    while (index >= route.Count)
+                    { // Enforce periodic boundary conditions
+                        index -= route.Count;
+                    }
+                    route[index] = value;
+                }
+            }
+            // Print contents
+            public void debug() {
+                Console.WriteLine("****Route****");
+                for (int iter = 0; iter < route.Count; iter++)
+                {
+                    Console.WriteLine("City: Index {0}, Position ({1}, {2})",iter, this[iter].X, this[iter].Y);
+                    Console.WriteLine("Path: Cost {0}, Vertices ({1}, {2}) -> ({3}, {4})", this[iter].costToGetTo(this[iter + 1]), this[iter].X, this[iter].Y, this[iter+1].X, this[iter+1].Y);
+                }
+                Console.WriteLine("Size: {0}", this.size());
+                Console.WriteLine("*************");
+            }
+            // Getter for size
+            public int size()
+            {
+                return route.Count;
+            }
+        }
         /**
          * Improved Greedy Solution Strategy
          * O(???)
          * 
          * TODO: We need a data structure with the right stuff in it to pass back up...
-         */ 
-        private void ImprovedGreedy(City[] cities)
+         */
+        private ArrayList ImprovedGreedy(List<City> input, int first_index)
         {
-
+            List<City> cities=new List<City>();
+            for(int iter=0; iter< input.Count; iter++)
+                cities.Add(input[iter]);
+            // Initialize variables
+            string[] results = new string[3];
+            PathBuilder path_builder = new PathBuilder(cities.Count);
+            // Initialize start city
+            path_builder.add(Cities[first_index]);
+            cities.RemoveAt(first_index);
+            // Find the closest points for the starting triangle
+            Tuple<int, double> first_best = new Tuple<int, double>(-1, double.PositiveInfinity); // Tuple<index, cost>
+            Tuple<int, double> second_best = new Tuple<int, double>(-1, double.PositiveInfinity);
+            for (int iter = 0; iter < cities.Count; iter++) {
+                double cost=path_builder[0].costToGetTo(cities[iter]);
+                if (cost < second_best.Item2) { // Found a better item
+                    if (cost < first_best.Item2) { // Better item is better than both previous
+                        second_best = first_best;
+                        first_best= new Tuple<int, double>(iter, cost);
+                    }
+                    else
+                    {
+                        second_best = new Tuple<int, double>(iter, cost);
+                    }
+                }
+            }
+            // Make sure we didn't start on an un-reachable node.
+            if (first_best.Item2 != double.PositiveInfinity && second_best.Item2 != double.PositiveInfinity)
+            {
+                path_builder.add(cities[first_best.Item1]);
+                path_builder.add(cities[second_best.Item1]);
+            }
+            else
+            { // Throw error if start node is unreachable.
+                Console.WriteLine("Encountered Error in Algorithm");
+                throw new Exception();
+                // Unreachable node found
+                // TODO: implement what to do here.
+            }
+            // Delete the last index first so we don't get a null exception.
+            if (first_best.Item1 > second_best.Item1)
+            {
+                cities.RemoveAt(first_best.Item1);
+                cities.RemoveAt(second_best.Item1);
+            }
+            // Now we can delete the first index.
+            else
+            {
+                cities.RemoveAt(second_best.Item1);
+                cities.RemoveAt(first_best.Item1);
+            }
+            // Add all cities to builder one at a time
+            bool found_error = false;
+            while (cities.Count > 0)
+            {
+                // Iterate through all unused cities and find the closest one.
+                double best_cost = double.PositiveInfinity;
+                int best_position = -1;
+                int best_insert = -1;
+                for (int iter = 0; iter < cities.Count; iter++)
+                {
+                    Tuple<double, int> test=path_builder.distance(cities[iter]);
+                    if (test.Item1 < best_cost)
+                    { // A closer node has been found.
+                        best_cost = test.Item1;
+                        best_position = iter;
+                        best_insert = test.Item2;
+                    }
+                }
+                // Add the closest node if there's a reachable one.
+                if (best_position != -1)
+                {
+                    path_builder.add(cities[best_position], best_insert);
+                    cities.RemoveAt(best_position);
+                }
+                else
+                {
+                    Console.WriteLine("Encountered Error in Algorithm");
+                    throw new Exception();
+                    // Unreachable node found
+                    // TODO: implement what to do here.
+                }
+            }
+            // Finialize problem
+            return path_builder.export();
         }
-
         /**
          * Greedy Divide and Conquer Algorithm
          * O(???)
@@ -492,37 +660,62 @@ namespace TSP
         public string[] fancySolveProblem()
         {
             string[] results = new string[3];
+            Stopwatch timer = new Stopwatch();
 
             // TODO: Add your implementation for your advanced solver here.
 
             // Sort the array by X values. I'm assuming that it's O(n log(n) ) - Calvin
+            /*
             Array.Sort<City>(Cities, sortCities);
-
+            */
             // Sanity Check
+            /*
             for (int i = 0; i < Cities.Length; i++ )
             {
                 Console.WriteLine(Cities[i].X);
             }
+            */
 
             // Algorithm Proper
-
-
-            // TODO: Recurse down to sets of size 3-5
-            /*
-             * Option A: Break horizontally into x regions of appropriate size
-             * Option B: Break current point set into two sets with "every other" point to create roughly overlapping sets. Repeat.
-             */
-
-            // TODO: Merge together those sets into a solution
-
-            this.ImprovedGreedy(this.Cities);
-
-            // TODO: Plug in the results
-
-            results[COST] = "not implemented";    // load results into array here, replacing these dummy values
-            results[TIME] = "-1";
-            results[COUNT] = "-1";
-
+            Random random = new Random();
+            double best_cost=double.PositiveInfinity;
+            int count=0;
+            // Make a new data structre for the cities to be used.
+            List<City> cities = new List<City>();
+            for (int iter = 0; iter < Cities.Length; iter++)
+            {
+                cities.Add(Cities[iter]);
+            }
+            // Start algorithm
+            timer.Start();
+            // Make a new structure to keep track of start nodes.
+            List<int> start_indexes= new List<int>();
+            for (int iter = 0; iter < cities.Count; iter++)
+            {
+                start_indexes.Add(iter);
+            }
+            // Iterate untill we run out of time.
+            while (timer.ElapsedMilliseconds < time_limit && start_indexes.Count>0)
+            {
+                // Find next start index.
+                int rnd_index = random.Next(start_indexes.Count);
+                int first_index = start_indexes[rnd_index];
+                start_indexes.RemoveAt(rnd_index);
+                // Solve with random index.
+                TSPSolution current=new TSPSolution(this.ImprovedGreedy(cities, first_index));
+                count++;
+                // Test to see if this is a better solution.
+                double current_cost=current.costOfRoute();
+                if(current_cost<best_cost){ // Found a better solution.
+                    bssf=current;
+                    best_cost=current_cost;
+                }
+            }
+            // Ran out of time. Return results.
+            timer.Stop();
+            results[COST] = costOfBssf().ToString();
+            results[TIME] = timer.Elapsed.ToString();
+            results[COUNT] = count.ToString();
             return results;
         }
         #endregion

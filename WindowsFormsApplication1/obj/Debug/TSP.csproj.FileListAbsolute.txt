@@ -25,3 +25,12 @@ P:\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.csprojResolveAssemblyRef
 P:\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.mainform.resources
 P:\w17-group-205\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
 P:\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.csproj.GenerateResource.Cache
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.csprojResolveAssemblyReference.cache
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.mainform.resources
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\lyons\Documents\GitHub\w17-group-205\WindowsFormsApplication1\obj\Debug\TSP.csproj.GenerateResource.Cache

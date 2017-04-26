@@ -10,6 +10,12 @@ Paths between cities have a characteristic distance and the goal of the problem 
 The basic idea of this algorithm was to add each point to the partial-solution one at a time according to whatever one had the minimal cost to add.
 It is written and maintained by Scott Leland Crossen.
 
+### Helpful Links
+
+[Project Assignment](https://faculty.cs.byu.edu/~farrell/courses/CS312/projects/TSPGroup.php)
+
+[More Details](http://scottcrossen42.com/project/traveling-sales-person/)
+
 ### Contributors
 
 1. Scott Leland Crossen  

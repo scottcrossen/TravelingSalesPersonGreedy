@@ -1,4 +1,4 @@
-# Greedy Traveling Sales Person Algorithm
+# Traveling Sales Person Algorithm
 
 A greedy approximation to the traveling sales person.
 
